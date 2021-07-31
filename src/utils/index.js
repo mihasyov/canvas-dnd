@@ -1,0 +1,37 @@
+
+export const hitShapeCheck = (x, y, shapes) => {
+    let targetEl = null,
+        isOnTarget = false,
+        targetIndex = null;
+
+    for (let i = 0; i < shapes.length; i++) {
+      const shape = shapes[i];
+      shape.isActive = false;
+      if (
+        shape.type === "rectangle" &&
+        x >= shape.x &&
+        x <= shape.x + shape.w &&
+        y >= shape.y &&
+        y <= shape.y + shape.h
+      ) {
+        shape.isActive = true;
+        targetEl = shape;
+        isOnTarget = true;
+        targetIndex = i;
+      }
+      if (
+        shape.type === "circle" &&
+        Math.pow(x-shape.x,2)/ Math.pow(shape.xRad,2) + Math.pow(y-shape.y,2)/ Math.pow(shape.yRad,2) < 1
+      ) {
+        shape.isActive = true;
+        targetEl = shape;
+        isOnTarget = true;
+        targetIndex = i;
+      }
+    }
+    return {
+        targetEl,
+        isOnTarget,
+        targetIndex
+    }
+};

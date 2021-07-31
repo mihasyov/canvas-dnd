@@ -6,8 +6,8 @@ const getInitialState = () => {
     const shapes = JSON.parse(localStorage.getItem("shapes")) || [];
     return {
         targetEl: null,
-        isTarget: false,
-        isKeyDown: false,
+        isOnTarget: false,
+        isMouseDown: false,
         shapes
 
     }
