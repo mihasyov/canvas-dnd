@@ -5,7 +5,7 @@ export const draw = (shapes, canvas, ctx) => {
       canvas.current.clientWidth,
       canvas.current.clientHeight
     );
-    shapes.map((figure) => {
+    shapes.forEach((figure) => {
         if(figure.type === "rectangle") {
             drawRect(figure, ctx)
         } else if (figure.type) {

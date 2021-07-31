@@ -7,9 +7,11 @@ import {
   SET_MOUSE_UP,
   DELETE_SHAPE,
   MOUSE_OUT,
+  SET_ACTIVE_SHAPE,
 } from "../store/types";
+
 import { draw, createShape } from "../utils/canvas";
-import { hitShapeCheck, checkOutsideCanvas } from "../utils";
+import { hitShapeCheck, checkOutsideCanvas, swapElems } from "../utils";
 
 const Canvas = ({ shapes, isOnTarget, isMouseDown, targetEl, dispatch }) => {
   const canvas = useRef();
@@ -50,7 +52,7 @@ const Canvas = ({ shapes, isOnTarget, isMouseDown, targetEl, dispatch }) => {
     dispatch({ type: ADD_SHAPE_ON_CANVAS, payload: newShape });
   };
 
-  const handleMouseDown = async (e) => {
+  const handleMouseDown = (e) => {
     dispatch({ type: SET_MOUSE_DOWN });
     const mouseX = parseInt(e.nativeEvent.offsetX - canvas.current.clientLeft);
     const mouseY = parseInt(e.nativeEvent.offsetY - canvas.current.clientTop);
@@ -59,7 +61,6 @@ const Canvas = ({ shapes, isOnTarget, isMouseDown, targetEl, dispatch }) => {
       mouseY,
       shapes
     );
-    console.log(targetIndex);
     if (isOnTarget) {
       dispatch({ type: SET_TARGET_EL, payload: { isOnTarget, targetEl } });
     }
@@ -67,6 +68,16 @@ const Canvas = ({ shapes, isOnTarget, isMouseDown, targetEl, dispatch }) => {
 
   const handleMouseUp = (e) => {
     if (isOnTarget && targetEl) {
+      const currentIndex = shapes.findIndex((el) => el.id === targetEl.id);
+      const lastIndex = shapes.length - 1;
+
+      // push selected shape to the end to draw shape above other
+      const newArr = swapElems(currentIndex, lastIndex, shapes);
+      // set current coords to selected shape
+      newArr[lastIndex].x = targetEl.x;
+      newArr[lastIndex].y = targetEl.y;
+
+      dispatch({ type: SET_ACTIVE_SHAPE, payload: newArr });
       dispatch({ type: SET_MOUSE_UP });
     }
   };
@@ -93,7 +104,6 @@ const Canvas = ({ shapes, isOnTarget, isMouseDown, targetEl, dispatch }) => {
   //                          RENDER
   //----------------------------------------------------------
 
-  console.log("render");
   return (
     <div className="canvas">
       <div className="title">Canvas</div>

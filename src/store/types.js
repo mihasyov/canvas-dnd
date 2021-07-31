@@ -4,3 +4,4 @@ export const SET_MOUSE_DOWN = "SET_MOUSE_DOWN";
 export const SET_MOUSE_UP = "SET_MOUSE_UP";
 export const MOUSE_OUT = "MOUSE_OUT";
 export const DELETE_SHAPE = "DELETE_SHAPE";
+export const SET_ACTIVE_SHAPE = "SET_ACTIVE_SHAPE";

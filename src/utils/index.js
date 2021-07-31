@@ -6,6 +6,7 @@ export const hitShapeCheck = (x, y, shapes) => {
     for (let i = 0; i < shapes.length; i++) {
       const shape = shapes[i];
       shape.isActive = false;
+      // check Rectangle
       if (
         shape.type === "rectangle" &&
         x >= shape.x &&
@@ -18,6 +19,7 @@ export const hitShapeCheck = (x, y, shapes) => {
         isOnTarget = true;
         targetIndex = i;
       }
+      // check Circle
       if (
         shape.type === "circle" &&
         Math.pow(x-shape.x,2)/ Math.pow(shape.xRad,2) + Math.pow(y-shape.y,2)/ Math.pow(shape.yRad,2) < 1
@@ -48,3 +50,9 @@ export const checkOutsideCanvas = (e, targetEl) => {
         e.target.offsetTop + targetEl.yRad < e.clientY;
     }
 }
+
+export const swapElems = (index1, index2, arr) => {
+    const newArr = JSON.parse(JSON.stringify(arr));
+    [newArr[index1], newArr[index2]] = [newArr[index2], newArr[index1]];
+    return newArr;
+  };
