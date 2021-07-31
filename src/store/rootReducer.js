@@ -3,7 +3,6 @@ import {
     SET_TARGET_EL,
     SET_MOUSE_DOWN,
     SET_MOUSE_UP,
-    SWAP_SHAPES,
     MOUSE_OUT,
     DELETE_SHAPE
 } from "./types";
@@ -35,7 +34,24 @@ export const rootReducer = (state, action) => {
                 ...state,
                 ...action.payload,
             };
-        
+            case MOUSE_OUT:
+                return {
+                    ...state,
+                    isMouseDown: false,
+                    isOnTarget: false
+    
+                };
+            case DELETE_SHAPE:
+                return {
+                    ...state,
+                    shapes : [
+                        ...action.payload
+                    ],
+                    isMouseDown: false,
+                    isOnTarget: false,
+                    targetEl: null,
+    
+                };
         
         default:
             return state;

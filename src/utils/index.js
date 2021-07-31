@@ -1,4 +1,3 @@
-
 export const hitShapeCheck = (x, y, shapes) => {
     let targetEl = null,
         isOnTarget = false,
@@ -35,3 +34,17 @@ export const hitShapeCheck = (x, y, shapes) => {
         targetIndex
     }
 };
+
+export const checkOutsideCanvas = (e, targetEl) => {
+    if (targetEl.type === "rectangle") {
+        return e.target.offsetLeft > e.clientX ||
+        e.target.offsetLeft + targetEl.w < e.clientX ||
+        e.target.offsetTop > e.clientY ||
+        e.target.offsetTop + targetEl.h < e.clientY;
+    } else if (targetEl.type === "circle") {
+        return e.target.offsetLeft > e.clientX ||
+        e.target.offsetLeft + targetEl.xRad < e.clientX ||
+        e.target.offsetTop > e.clientY ||
+        e.target.offsetTop + targetEl.yRad < e.clientY;
+    }
+}

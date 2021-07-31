@@ -5,9 +5,11 @@ import {
   SET_TARGET_EL,
   SET_MOUSE_DOWN,
   SET_MOUSE_UP,
+  DELETE_SHAPE,
+  MOUSE_OUT,
 } from "../store/types";
 import { draw, createShape } from "../utils/canvas";
-import { hitShapeCheck } from "../utils";
+import { hitShapeCheck, checkOutsideCanvas } from "../utils";
 
 const Canvas = ({ shapes, isOnTarget, isMouseDown, targetEl, dispatch }) => {
   const canvas = useRef();
@@ -16,13 +18,24 @@ const Canvas = ({ shapes, isOnTarget, isMouseDown, targetEl, dispatch }) => {
     const canvasEle = canvas.current;
     canvasEle.width = canvasEle.clientWidth;
     canvasEle.height = canvasEle.clientHeight;
-
     ctx.current = canvasEle.getContext("2d");
+
+    document.addEventListener("keydown", handleDeleteKey);
+    return () => {
+      document.removeEventListener("keydown", handleDeleteKey);
+    };
   }, []);
 
   useEffect(() => {
     draw(shapes, canvas, ctx);
   });
+
+  const handleDeleteKey = (e) => {
+    if (e.key === "Delete") {
+      const newShapes = shapes.filter((el) => el.isActive !== true);
+      dispatch({ type: DELETE_SHAPE, payload: newShapes });
+    }
+  };
 
   const allowDrop = (e) => {
     e.preventDefault();
@@ -49,7 +62,6 @@ const Canvas = ({ shapes, isOnTarget, isMouseDown, targetEl, dispatch }) => {
     console.log(targetIndex);
     if (isOnTarget) {
       dispatch({ type: SET_TARGET_EL, payload: { isOnTarget, targetEl } });
-      draw(shapes, canvas, ctx);
     }
   };
 
@@ -68,6 +80,15 @@ const Canvas = ({ shapes, isOnTarget, isMouseDown, targetEl, dispatch }) => {
     draw(shapes, canvas, ctx);
   };
 
+  const handleMouseOut = (e) => {
+    dispatch({ type: MOUSE_OUT });
+    if (!targetEl) return;
+    const isMouseOutsideCanvas = checkOutsideCanvas(e, targetEl);
+    if (isMouseDown && isOnTarget && isMouseOutsideCanvas) {
+      const newShapes = shapes.filter((el) => el.id !== targetEl.id);
+      dispatch({ type: DELETE_SHAPE, payload: newShapes });
+    }
+  };
   //----------------------------------------------------------
   //                          RENDER
   //----------------------------------------------------------
@@ -82,6 +103,7 @@ const Canvas = ({ shapes, isOnTarget, isMouseDown, targetEl, dispatch }) => {
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
+        onMouseOut={handleMouseOut}
         onDragOver={allowDrop}
         onDrop={(e) => onDrop(e, shapes)}
       ></canvas>
